@@ -13,16 +13,14 @@ import { PAGES } from 'src/enums';
 
 import { Character, Response } from 'src/types';
 
-interface ParamsObj {
-    [key: string]: string | number
-  }
-
 const store = useStore();
 
 const charactersList = ref<Character[]>([]);
-const queryObject = ref({});
 const page = ref(1);
 const pageCount = ref(1);
+
+const isResultEmpty = computed(() => charactersList.value.length === 0);
+const pageNumber = (computed(() => store.pages[PAGES.CHARACTERS]));
 
 const fetchCharacters = async () => {
   await store.fetchCharacters();
@@ -30,40 +28,9 @@ const fetchCharacters = async () => {
   pageCount.value = (store.characters as Response).info.pages;
 };
 
-onMounted(async () => {
-  page.value = store.getPages[PAGES.CHARACTERS] as number;
-  fetchCharacters();
-});
-
-const handleQueryChange = (params: ParamsObj) => {
-  const tempParams: ParamsObj = { ...queryObject.value };
-
-  if (!params.page) {
-    tempParams.page = 1;
-    page.value = 1;
-    store.setPage(PAGES.CHARACTERS, 1);
-  }
-
-  Object.entries(params).forEach(([key, value]) => {
-    if (value) {
-      tempParams[key] = value;
-    } else {
-      delete tempParams[key];
-    }
-  });
-
-  queryObject.value = { ...tempParams };
-
-  store.setFilters(tempParams);
-
-  fetchCharacters();
-};
-
-const isResultEmpty = computed(() => charactersList.value.length === 0);
-
 const handlePageChange = async (pageNum: number) => {
   store.setPage(PAGES.CHARACTERS, pageNum);
-  await handleQueryChange({ page: pageNum });
+  fetchCharacters();
 
   setTimeout(() => {
     window.scrollTo({
@@ -71,7 +38,7 @@ const handlePageChange = async (pageNum: number) => {
       left: 0,
       behavior: 'smooth',
     });
-  }, 200);
+  }, 100);
 };
 
 const { isSmallScreen } = useScreenSize();
@@ -79,11 +46,16 @@ const { isSmallScreen } = useScreenSize();
 const { scrollToSaved } = useSavedScroll(PAGES.CHARACTERS);
 scrollToSaved();
 
+onMounted(async () => {
+  page.value = store.getPages[PAGES.CHARACTERS] as number;
+  fetchCharacters();
+});
+
 </script>
 
 <template>
   <q-page class=" column" :class="{'q-pa-sm': isSmallScreen}">
-    <FiltersToolbar @change="handleQueryChange" />
+    <FiltersToolbar @change="fetchCharacters" />
     <div v-if="!isResultEmpty" class="q-mt-xl">
       <div class="row q-col-gutter-sm ">
       <div class="col-xs-6 col-sm-4 col-md-3" v-for="character in charactersList" :key="`${character.name}-${character.id}`">
@@ -92,7 +64,7 @@ scrollToSaved();
     </div>
      <div class="q-my-xl flex flex-center">
       <q-pagination
-        v-model="page"
+        v-model="pageNumber"
         @update:model-value="handlePageChange"
         :max="pageCount"
         :max-pages="6"

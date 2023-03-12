@@ -5,7 +5,7 @@ import {
 
 import { useStore } from 'src/stores/store';
 
-import { species } from 'src/enums.js';
+import { species, PAGES } from 'src/enums.js';
 
 const store = useStore();
 
@@ -19,7 +19,9 @@ const state = reactive({
 });
 
 watch(state, () => {
-  emit('change', { ...state, page: '' });
+  store.setFilters(state);
+  store.setPage(PAGES.CHARACTERS, 1);
+  emit('change');
 });
 
 onMounted(() => {

@@ -1,20 +1,25 @@
 import { defineStore } from 'pinia';
 import { api } from 'src/boot/axios';
 
-interface ParamsObj {
-  [key: string]: string | number
+interface NumParams {
+  [key: string]: number
+}
+
+interface Filters {
+  species: string
+  name: string
 }
 
 export const useStore = defineStore('store', {
   state: () => ({
     characters: {},
     singleCharacter: {},
-    filters: {},
-    pages: <ParamsObj>{
+    filters: <Filters>{},
+    pages: <NumParams>{
       characters: 1,
       favorites: 1,
     },
-    scrollTop: <ParamsObj>{
+    scrollTop: <NumParams>{
       characters: 0,
       favorites: 0,
     },
@@ -31,9 +36,12 @@ export const useStore = defineStore('store', {
     async fetchCharacters() {
       try {
         const query = ['?'] as string[];
+        query.push(`page=${this.pages.characters}`);
 
         Object.entries(this.filters).forEach(([key, value], index) => {
-          query.push(`${key}=${value}${index <= 1 && index < (Object.entries(this.filters).length - 1) ? '&' : ''}`);
+          if (value) {
+            query.push(`&${key}=${value}${index <= 1 && index < (Object.entries(this.filters).length - 1) ? '&' : ''}`);
+          }
         });
 
         const response = await api.get(`character${query.join('')}`);
@@ -58,7 +66,7 @@ export const useStore = defineStore('store', {
       }
     },
 
-    setFilters(filters: ParamsObj) {
+    setFilters(filters: Filters) {
       this.filters = filters;
     },
 

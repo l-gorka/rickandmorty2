@@ -7,26 +7,20 @@ import { useRouter } from 'vue-router';
 import { useFavorites } from 'src/composables';
 import { useStore } from 'src/stores/store';
 
-import { PAGES } from 'src/enums';
 import { getIconsSet } from 'src/functions';
+
+import { Character } from 'src/types';
 
 const router = useRouter();
 const store = useStore();
 
-const props = defineProps({
-  character: {
-    type: Object,
-    required: true,
-  },
-  page: {
-    type: String,
-    required: true,
-    default: PAGES.CHARACTERS,
-  },
-});
+const props = defineProps<{
+  character: Character
+  page: string
+}>();
 
 const emit = defineEmits(['change']);
-const characterRef = ref(props.character);
+const characterRef = ref<Character>(props.character);
 
 const { handleFavClick, isFavorite, favKey } = useFavorites(characterRef, 0);
 
