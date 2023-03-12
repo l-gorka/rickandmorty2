@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import CharacterCard from 'src/components/CharacterCard.vue';
-import FiltersToolbar from 'src/components/FiltersToolbar.vue';
 import {
   onMounted, ref, computed,
 } from 'vue';
 import { useStore } from 'src/stores/store';
 import { useScreenSize, useSavedScroll } from 'src/composables';
+
+import { Character } from 'src/types';
+
+import { getFavoriteCharacters } from 'src/functions.js';
+
 import { PAGES } from 'src/enums';
-import { Character, Response } from 'src/types';
 
 interface ParamsObj {
     [key: string]: string | number
@@ -20,14 +23,16 @@ const queryObject = ref({});
 const page = ref(1);
 const pageCount = ref(1);
 
-const fetchCharacters = async () => {
-  await store.fetchCharacters();
-  charactersList.value = (store.characters as Response).results as Character[];
-  pageCount.value = (store.characters as Response).info.pages;
+const visibleList = computed(() => charactersList.value.slice((page.value - 1) * 20, page.value * 20));
+
+const fetchCharacters = () => {
+  charactersList.value = [];
+  charactersList.value = getFavoriteCharacters();
+  pageCount.value = Math.ceil(charactersList.value.length / 20);
 };
 
 onMounted(async () => {
-  page.value = store.getPages[PAGES.CHARACTERS] as number;
+  page.value = store.getPages[PAGES.FAVORITES] as number;
   fetchCharacters();
 });
 
@@ -37,16 +42,7 @@ const handleQueryChange = (params: ParamsObj) => {
   if (!params.page) {
     tempParams.page = 1;
     page.value = 1;
-    store.setPage(PAGES.CHARACTERS, 1);
   }
-
-  Object.entries(params).forEach(([key, value]) => {
-    if (value) {
-      tempParams[key] = value;
-    } else {
-      delete tempParams[key];
-    }
-  });
 
   queryObject.value = { ...tempParams };
 
@@ -58,7 +54,7 @@ const handleQueryChange = (params: ParamsObj) => {
 const isResultEmpty = computed(() => charactersList.value.length === 0);
 
 const handlePageChange = async (pageNum: number) => {
-  store.setPage(PAGES.CHARACTERS, pageNum);
+  store.setPage(PAGES.FAVORITES, pageNum);
   await handleQueryChange({ page: pageNum });
 
   setTimeout(() => {
@@ -67,23 +63,25 @@ const handlePageChange = async (pageNum: number) => {
       left: 0,
       behavior: 'smooth',
     });
-  }, 200);
+  }, 100);
 };
 
 const { isSmallScreen } = useScreenSize();
 
-const { scrollToSaved } = useSavedScroll(PAGES.CHARACTERS);
-scrollToSaved();
+const handleFavChange = () => {
+  fetchCharacters();
+};
 
+const { scrollToSaved } = useSavedScroll('favorites');
+scrollToSaved();
 </script>
 
 <template>
-  <q-page class=" column" :class="{'q-pa-sm': isSmallScreen}">
-    <FiltersToolbar @change="handleQueryChange" />
-    <div v-if="!isResultEmpty" class="q-mt-xl">
+  <q-page class=" column" :class="{'q-pa-sm': isSmallScreen, 'q-pa-md': !isSmallScreen}">
+    <div v-if="!isResultEmpty" :class="{'q-mt-sm': isSmallScreen, 'q-mt-xl': !isSmallScreen}">
       <div class="row q-col-gutter-sm ">
-      <div class="col-xs-6 col-sm-4 col-md-3" v-for="character in charactersList" :key="`${character.name}-${character.id}`">
-        <CharacterCard :character="character" :page="PAGES.CHARACTERS" />
+      <div class="col-xs-6 col-sm-4 col-md-3" v-for="character in visibleList" :key="`${character.name}-${character.id}`">
+        <CharacterCard :character="character" :page="PAGES.FAVORITES" @change="handleFavChange" />
       </div>
     </div>
      <div class="q-my-xl flex flex-center">

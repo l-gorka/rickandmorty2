@@ -8,7 +8,7 @@ const routes = [
 
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/HomePage.vue') },
+      { path: '', component: () => import('pages/HomePage.vue'), name: 'characters' },
     ],
   },
   {
@@ -16,6 +16,7 @@ const routes = [
     label: 'Characters',
     meta: {
       order: 2,
+      name: 'characters',
     },
     component: () => import('layouts/MainLayout.vue'),
     children: [
@@ -25,12 +26,13 @@ const routes = [
   {
     path: '/favorites',
     label: 'Favorites',
+
     meta: {
       order: 3,
     },
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/IndexPage.vue') },
+      { path: '', component: () => import('pages/FavoritesPage.vue'), name: 'favorites' },
     ],
   },
   {
@@ -39,6 +41,7 @@ const routes = [
     meta: {
       order: 4,
       hideOnToolbar: true,
+      detail: true,
     },
     component: () => import('layouts/MainLayout.vue'),
     children: [

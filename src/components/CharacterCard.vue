@@ -1,69 +1,59 @@
 <script setup lang="ts">
-import { defineProps, computed } from 'vue';
+import {
+  defineProps, computed, ref, watch, defineEmits,
+} from 'vue';
+
 import { useRouter } from 'vue-router';
+import { useFavorites } from 'src/composables';
+import { useStore } from 'src/stores/store';
+
+import { PAGES } from 'src/enums';
+import { getIconsSet } from 'src/functions';
 
 const router = useRouter();
+const store = useStore();
 
 const props = defineProps({
   character: {
     type: Object,
     required: true,
   },
+  page: {
+    type: String,
+    required: true,
+    default: PAGES.CHARACTERS,
+  },
 });
 
-const genderIcon = computed(() => {
-  if (props.character.gender === 'Female') {
-    return 'female';
-  }
+const emit = defineEmits(['change']);
 
-  if (props.character.gender === 'Male') {
-    return 'male';
-  }
+const characterRef = ref(props.character);
+const { handleFavClick, isFavorite, favKey } = useFavorites(characterRef, 0);
 
-  return 'transgender';
-});
-
-const statusIcon = computed(() => {
-  if (props.character.status === 'Alive') {
-    return { icon: 'sentiment_very_satisfied', color: 'text-green' };
-  }
-
-  if (props.character.status === 'Dead') {
-    return { icon: 'sentiment_very_dissatisfied', color: 'text-red' };
-  }
-
-  return { icon: 'help_outline', color: 'text-white' };
-});
-
-const speciesIcon = computed(() => {
-  if (props.character.species === 'Human') {
-    return 'face';
-  }
-  if (props.character.species === 'Animal') {
-    return 'pets';
-  }
-
-  return 'person_4';
-});
+const icons = computed(() => getIconsSet(props.character));
 
 const handleOpenDetails = () => {
-  router.push(`details/${props.character.id}`);
+  store.setScrollTop(props.page, window.scrollY);
+  router.push({ path: `details/${props.character.id}` });
 };
+
+watch(favKey, () => {
+  emit('change', favKey.value);
+});
 
 </script>
 
 <template>
     <q-card class="character-card" square bordered flat>
       <q-img :src="character.image" loading="lazy" @click="handleOpenDetails" />
-
       <q-card-section>
         <q-btn
           fab
           color="primary"
-          icon="favorite_border"
+          :icon="isFavorite ? 'favorite' : 'favorite_border'"
           class="absolute"
-          style="top: 0; right: 12px; transform: translateY(-50%);"
-          @click="() => {}"
+          style="top: -10px; right: 4px; transform: translateY(-50%);"
+          @click="handleFavClick"
         />
 
         <div class="row no-wrap items-center">
@@ -71,7 +61,7 @@ const handleOpenDetails = () => {
             {{character.name}}
           </div>
         </div>
-        <div class="text-subtitle2">{{ character.location.name }}</div>
+        <div class="text-subtitle2 ellipsis">{{ character.location.name }}</div>
       </q-card-section>
 
       <q-separator />
@@ -79,16 +69,16 @@ const handleOpenDetails = () => {
       <q-card-actions>
         <q-btn
           color="primary"
-          :icon="statusIcon.icon"
-          :class="statusIcon.color"
+          :icon="icons.status.icon"
+          :class="icons.status.color"
         />
         <q-btn
           color="primary"
-          :icon="speciesIcon"
+          :icon="icons.species"
         />
         <q-btn
           color="primary"
-          :icon="genderIcon"
+          :icon="icons.gender"
         >
       </q-btn>
       </q-card-actions>
@@ -100,11 +90,9 @@ const handleOpenDetails = () => {
   transition: all .2s ease-out;
 
     &:hover {
-      // transform: scale(1.1);
       cursor: pointer;
       filter: saturate(1.3);
       border: 1px solid #DDD;
-      z-index: 5;
     }
   }
 </style>

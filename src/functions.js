@@ -2,10 +2,10 @@ export const getIconsSet = (character) => {
   const iconSet = {};
 
   switch (character?.gender) {
-    case 'male':
+    case 'Male':
       iconSet.gender = 'male';
       break;
-    case 'female':
+    case 'Female':
       iconSet.gender = 'female';
       break;
     default:
@@ -37,3 +37,28 @@ export const getIconsSet = (character) => {
 
   return iconSet;
 };
+
+export const addToFavorites = (character) => {
+  const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+  if (!favorites.find(({ id }) => id === character.id)) {
+    favorites.push(character);
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+  }
+};
+
+export const removeFromFavorites = (characterID) => {
+  const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+  const charIndex = favorites.findIndex(({ id }) => id === characterID);
+  if (charIndex > -1) {
+    favorites.splice(charIndex, 1);
+  }
+
+  localStorage.setItem('favorites', JSON.stringify(favorites));
+};
+
+export const checkIfInFavorites = (characterID) => {
+  const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+  return !!favorites.find(({ id }) => id === characterID);
+};
+
+export const getFavoriteCharacters = () => JSON.parse(localStorage.getItem('favorites')) || [];

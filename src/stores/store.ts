@@ -10,11 +10,21 @@ export const useStore = defineStore('store', {
     characters: {},
     singleCharacter: {},
     filters: {},
+    pages: <ParamsObj>{
+      characters: 1,
+      favorites: 1,
+    },
+    scrollTop: <ParamsObj>{
+      characters: 0,
+      favorites: 0,
+    },
   }),
 
   getters: {
     getCharacters: (state) => state.characters,
     getFilters: (state) => state.filters,
+    getPages: (state) => state.pages,
+    getScrollTop: (state) => state.scrollTop,
   },
 
   actions: {
@@ -50,6 +60,14 @@ export const useStore = defineStore('store', {
 
     setFilters(filters: ParamsObj) {
       this.filters = filters;
+    },
+
+    setPage(route: string, page: number) {
+      this.pages[route] = page;
+    },
+
+    setScrollTop(route: string, scrollTop: number) {
+      this.scrollTop[route] = scrollTop;
     },
   },
 });

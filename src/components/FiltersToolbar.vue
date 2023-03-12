@@ -18,7 +18,7 @@ const state = reactive({
 });
 
 watch(state, () => {
-  emit('change', state);
+  emit('change', { ...state, page: '' });
 });
 
 onMounted(() => {

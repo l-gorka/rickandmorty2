@@ -1,3 +1,41 @@
+<script setup lang="ts">
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useStore } from 'src/stores/store';
+import routes from '../router/routes';
+
+const currentTab = ref('Home');
+const transitionName = ref('slide-right');
+const transitionMode = ref<any>('out-in');
+
+const routeList = routes.filter((route) => !route.meta?.hideOnToolbar);
+
+const router = useRouter();
+
+router.afterEach((to: any, from: any) => {
+  if (to.meta.detail) {
+    if (window.scrollY === 0) {
+      transitionName.value = 'slide-down';
+      transitionMode.value = '';
+      return;
+    }
+
+    transitionName.value = 'slide-right';
+    transitionMode.value = 'out-in';
+    return;
+  }
+
+  if (from.meta.detail) {
+    transitionName.value = 'slide-up';
+    transitionMode.value = '';
+    return;
+  }
+
+  transitionMode.value = 'out-in';
+  transitionName.value = to.meta.order > from.meta.order ? 'slide-right' : 'slide-left';
+});
+
+</script>
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-header bordered>
@@ -14,44 +52,22 @@
       color="accent"
       size="10px"
     />
-    <q-page-container>
-      <router-view v-slot="{ Component }" class="page-container">
-        <transition :name="transitionName" mode="out-in">
+    <q-page-container class="page-container">
+      <router-view v-slot="{ Component }">
+        <transition :name="transitionName" :mode="transitionMode">
           <component :is="Component" />
-            </transition>
-          </router-view>
+        </transition>
+        </router-view>
+
     </q-page-container>
   </q-layout>
 </template>
 
-<script setup lang="ts">
-import { ref } from 'vue';
-// import { api } from 'src/boot/axios.js';
-import { useRouter } from 'vue-router';
-import routes from '../router/routes';
-
-const currentTab = ref('Home');
-const transitionName = ref('slide-right');
-
-const routeList = routes.filter((route) => !route.meta?.hideOnToolbar);
-
-const router = useRouter();
-
-router.afterEach((to: any, from: any) => {
-  transitionName.value = to.meta.order > from.meta.order ? 'slide-right' : 'slide-left';
-});
-
-</script>
 <style lang="scss">
 .page-container {
+  position: relative;
   max-width: 1300px;
   margin: 0 auto;
-}
-
-.header {
-  &__title {
-    // color: red !important;
-  }
 }
 
 </style>
