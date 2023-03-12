@@ -3,6 +3,7 @@ import CharacterCard from 'src/components/CharacterCard.vue';
 import {
   onMounted, ref, computed,
 } from 'vue';
+
 import { useStore } from 'src/stores/store';
 import { useScreenSize, useSavedScroll } from 'src/composables';
 

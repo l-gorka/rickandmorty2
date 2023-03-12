@@ -1,12 +1,16 @@
 <script setup lang="ts">
-import CharacterCard from 'src/components/CharacterCard.vue';
-import FiltersToolbar from 'src/components/FiltersToolbar.vue';
 import {
   onMounted, ref, computed,
 } from 'vue';
+
+import CharacterCard from 'src/components/CharacterCard.vue';
+import FiltersToolbar from 'src/components/FiltersToolbar.vue';
+
 import { useStore } from 'src/stores/store';
 import { useScreenSize, useSavedScroll } from 'src/composables';
+
 import { PAGES } from 'src/enums';
+
 import { Character, Response } from 'src/types';
 
 interface ParamsObj {

@@ -26,8 +26,8 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['change']);
-
 const characterRef = ref(props.character);
+
 const { handleFavClick, isFavorite, favKey } = useFavorites(characterRef, 0);
 
 const icons = computed(() => getIconsSet(props.character));

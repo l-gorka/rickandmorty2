@@ -3,9 +3,11 @@ import { useQuasar } from 'quasar';
 import {
   onMounted, ref, computed,
 } from 'vue';
+
 import { useStore } from 'src/stores/store';
 import { useRoute } from 'vue-router';
-import { useFavorites } from 'src/composables';
+
+import { useFavorites, useScreenSize } from 'src/composables';
 
 import {
   getIconsSet,
@@ -31,8 +33,8 @@ onMounted(async () => {
 const iconSet = computed(() => getIconsSet(character.value));
 
 const wrapperClass = computed(() => ($q.screen.gt.xs ? 'q-mt-xl' : 'detail'));
-const isLargeScreen = computed(() => $q.screen.gt.sm);
-const isSmallScreen = computed(() => $q.screen.lt.sm);
+
+const { isLargeScreen, isSmallScreen } = useScreenSize();
 
 </script>
 

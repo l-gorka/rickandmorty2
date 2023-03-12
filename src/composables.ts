@@ -1,11 +1,19 @@
 import {
   ref, onMounted, computed,
 } from 'vue';
+
 import { addToFavorites, removeFromFavorites, checkIfInFavorites } from 'src/functions';
+
 import { useQuasar } from 'quasar';
 import { useStore } from 'src/stores/store';
 
-export function useFavorites(character: any, id: any) {
+import { Character } from './types';
+
+interface CharacterRef {
+  value: Character;
+}
+
+export function useFavorites(character: CharacterRef, id: number) {
   const $q = useQuasar();
 
   const isFavorite = ref(false);

@@ -2,9 +2,10 @@
 import {
   reactive, computed, watch, defineEmits, onMounted,
 } from 'vue';
-import { species } from 'src/enums.js';
 
 import { useStore } from 'src/stores/store';
+
+import { species } from 'src/enums.js';
 
 const store = useStore();
 

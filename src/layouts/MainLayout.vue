@@ -1,22 +1,25 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { useStore } from 'src/stores/store';
+import { ref, TransitionProps } from 'vue';
+
+import { RouteLocation, useRouter } from 'vue-router';
+
 import routes from '../router/routes';
+
+type TransitionMode = TransitionProps['mode'];
 
 const currentTab = ref('Home');
 const transitionName = ref('slide-right');
-const transitionMode = ref<any>('out-in');
+const transitionMode = ref<TransitionMode>('out-in');
 
 const routeList = routes.filter((route) => !route.meta?.hideOnToolbar);
 
 const router = useRouter();
 
-router.afterEach((to: any, from: any) => {
+router.afterEach((to: RouteLocation, from: RouteLocation) => {
   if (to.meta.detail) {
     if (window.scrollY === 0) {
       transitionName.value = 'slide-down';
-      transitionMode.value = '';
+      transitionMode.value = 'default';
       return;
     }
 
@@ -27,12 +30,12 @@ router.afterEach((to: any, from: any) => {
 
   if (from.meta.detail) {
     transitionName.value = 'slide-up';
-    transitionMode.value = '';
+    transitionMode.value = 'default';
     return;
   }
 
   transitionMode.value = 'out-in';
-  transitionName.value = to.meta.order > from.meta.order ? 'slide-right' : 'slide-left';
+  transitionName.value = (to.meta.order as number) > (from.meta.order as number) ? 'slide-right' : 'slide-left';
 });
 
 </script>
