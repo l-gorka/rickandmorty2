@@ -46,6 +46,7 @@ export const useStore = defineStore('store', {
 
         const response = await api.get(`character${query.join('')}`);
         this.characters = response.data;
+        console.log(this.characters);
       } catch (error) {
         this.characters = {
           info: {
