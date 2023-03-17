@@ -209,4 +209,5 @@ module.exports = configure((/* ctx */) => ({
     // extendBexScriptsConf (esbuildConf) {}
     // extendBexManifestJson (json) {}
   },
+  preFetch: true,
 }));

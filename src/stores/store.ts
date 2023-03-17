@@ -6,8 +6,9 @@ interface NumParams {
 }
 
 interface Filters {
-  species: string
-  name: string
+  species?: string
+  name?: string
+  page?: number
 }
 
 export const useStore = defineStore('store', {
@@ -46,7 +47,6 @@ export const useStore = defineStore('store', {
 
         const response = await api.get(`character${query.join('')}`);
         this.characters = response.data;
-        console.log(this.characters);
       } catch (error) {
         this.characters = {
           info: {
