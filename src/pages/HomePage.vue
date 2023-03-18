@@ -4,18 +4,21 @@
 
 <template>
   <q-page class="flex flex-center">
-    <q-img
+    <div class="home__container">
+      <q-img
         class="home__image"
+        loading="eager"
         src="https://res.cloudinary.com/dgmcox/image/upload/v1677940843/a11y-training/Rick-And-Morty-ts_sxr46n.webp"
         spinner-color="primary"
       />
-
+    </div>
   </q-page>
 </template>
 <style lang="scss">
 .home {
   &__image {
     width: 60vh;
+    height: auto;
     animation: grow-shrink 6s linear infinite;
   }
 }
