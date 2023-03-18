@@ -1,5 +1,10 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 
+const image = ref('https://res.cloudinary.com/dgmcox/image/upload/q_10/v1677940843/a11y-training/Rick-And-Morty-ts_sxr46n.webp');
+// setTimeout(() => {
+//   image.value = 'https://res.cloudinary.com/dgmcox/image/upload/v1677940843/a11y-training/Rick-And-Morty-ts_sxr46n.webp';
+// }, 100);
 </script>
 
 <template>
@@ -7,7 +12,8 @@
     <div class="home__container">
       <q-img
         class="home__image"
-        src="https://res.cloudinary.com/dgmcox/image/upload/v1677940843/a11y-training/Rick-And-Morty-ts_sxr46n.webp"
+        ratio="1"
+        :src="image"
         spinner-color="primary"
       />
     </div>
