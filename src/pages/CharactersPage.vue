@@ -82,7 +82,6 @@ onMounted(async () => {
 
 <style lang="scss">
 .characters {
-  background-color: darkblue;
   &__no-results {
     display: grid;
     place-items: center;
