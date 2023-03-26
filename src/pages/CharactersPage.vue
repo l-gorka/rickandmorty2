@@ -54,7 +54,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <q-page class=" column" :class="{'q-pa-sm': isSmallScreen}">
+  <q-page class=" column characters" :class="{'q-pa-sm': isSmallScreen}">
     <FiltersToolbar @change="fetchCharacters" />
     <div v-if="!isResultEmpty" class="q-mt-xl">
       <div class="row q-col-gutter-sm ">
@@ -82,6 +82,7 @@ onMounted(async () => {
 
 <style lang="scss">
 .characters {
+  background-color: darkblue;
   &__no-results {
     display: grid;
     place-items: center;

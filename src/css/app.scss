@@ -12,29 +12,26 @@ $grey-1: #5C5C5C;
 .slide-left-leave-active,
 .slide-right-enter-active,
 .slide-right-leave-active {
-  transition: all 0.3s linear;
+  transition: all 0.3s ease-out;
+  right: 0;
 }
 
 .slide-right-enter-from {
-  opacity: 0;
-  transform: translateX(400px);
-  position: absolute;
+  // position: absolute;
+  right: 100%;
 }
 
 .slide-right-leave-to {
-  opacity: 0;
-  transform: translateX(-400px);
+  right: -100%;
 }
 
 .slide-left-enter-from {
-  opacity: 0;
-  transform: translateX(-400px);
-  position: absolute;
+  right: -100%;
+  // position: absolute;
 }
 
 .slide-left-leave-to {
-  opacity: 0;
-  transform: translateX(400px);
+  right: 100%;
 }
 
 @keyframes grow-shrink {
