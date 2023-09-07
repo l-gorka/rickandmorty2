@@ -1,5 +1,7 @@
 # rick-morty (rick-morty-ts)
 
+## [Live demo](https://prismatic-wisp-d0ee8c.netlify.app/#/)
+
 A Quasar Project
 
 ## Install the dependencies
